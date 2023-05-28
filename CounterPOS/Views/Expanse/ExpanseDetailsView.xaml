@@ -1,0 +1,150 @@
+﻿<UserControl
+    x:Class="CounterPOS.Views.ExpanseDetailsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <wpfui:ClientAreaBorder
+        MinWidth="500"
+        Padding="0"
+        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+        Style="{DynamicResource BorderRegion}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource TextBlockTitle}"
+                    Text="Edit Expanse" />
+                <wpfui:Button
+                    Grid.Column="1"
+                    Command="{Binding HideViewCommand}"
+                    Icon="Dismiss12" />
+            </Grid>
+
+            <wpfui:NavigationSeparator Grid.Row="1" Margin="0" />
+
+
+            <Grid Grid.Row="2" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel
+                        Grid.Row="0"
+                        Margin="0,0,0,5"
+                        VerticalAlignment="Top">
+                        <TextBlock Margin="3,0,0,2" Text="*Description" />
+                        <wpfui:TextBox Text="{Binding SelectedExpanse.ExpansesDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,0,0,5"
+                        VerticalAlignment="Top">
+                        <TextBlock Margin="3,0,0,2" Text="*Amount" />
+                        <wpfui:TextBox Text="{Binding SelectedExpanse.Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <Grid
+                        Grid.Row="2"
+                        Margin="0,0,0,5"
+                        VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                            <TextBlock Margin="3,0,0,2" Text="*Expanse Category" />
+                            <ComboBox
+                                DisplayMemberPath="Category"
+                                ItemsSource="{Binding ExpanseCategoryList}"
+                                SelectedIndex="0"
+                                SelectedValuePath="Category"
+                                Style="{DynamicResource DefaultComboBoxStyle}"
+                                Text="{Binding SelectedExpanse.ExpanseCategory, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        </StackPanel>
+                        <wpfui:Button
+                            Grid.Column="1"
+                            Height="38"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding NewExpanseCategoryWindowCommand}"
+                            Icon="Add12" />
+                    </Grid>
+
+                    <StackPanel
+                        Grid.Row="3"
+                        Margin="0,0,0,5"
+                        VerticalAlignment="Top">
+                        <TextBlock Margin="3,0,0,2" Text="*Added Date" />
+                        <DatePicker
+                            IsEnabled="False"
+                            SelectedDate="{Binding SelectedExpanse.ExpanseDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{DynamicResource DefaultDatePickerStyle}" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Row="4"
+                        Margin="0,0,0,5"
+                        VerticalAlignment="Top">
+                        <TextBlock Margin="3,0,0,2" Text="Note" />
+                        <wpfui:TextBox
+                            Height="60"
+                            MinHeight="60"
+                            VerticalContentAlignment="Top"
+                            AcceptsReturn="True"
+                            MaxLines="3"
+                            MinLines="3"
+                            Text="{Binding SelectedExpanse.Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1" VerticalAlignment="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource DangerBrush}"
+                        Text="Field(s) marked with (*) are mandatory." />
+                    <wpfui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Command="{Binding UpdateExpanseCommand}"
+                        Content="Update" />
+                </Grid>
+            </Grid>
+
+
+        </Grid>
+    </wpfui:ClientAreaBorder>
+</UserControl>

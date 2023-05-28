@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
+    <StartupObject>CounterPOS.App</StartupObject>
+    <ApplicationIcon>Resources\counterpos.ico</ApplicationIcon>
+    <PackageIcon>counterpos.ico</PackageIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Controls\**" />
+    <EmbeddedResource Remove="Controls\**" />
+    <None Remove="Controls\**" />
+    <Page Remove="Controls\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\add.png" />
+    <None Remove="Resources\category.png" />
+    <None Remove="Resources\counterpos.png" />
+    <None Remove="Resources\edit.png" />
+    <None Remove="Resources\FbrPosImage.png" />
+    <None Remove="Resources\Fonts\calibri-bold-italic.ttf" />
+    <None Remove="Resources\Fonts\calibri-bold.ttf" />
+    <None Remove="Resources\Fonts\calibri-italic.ttf" />
+    <None Remove="Resources\Fonts\Nunito-Bold.ttf" />
+    <None Remove="Resources\Fonts\Nunito-Light.ttf" />
+    <None Remove="Resources\Fonts\Nunito-Regular.ttf" />
+    <None Remove="Resources\Fonts\Nunito-VariableFont_wght.ttf" />
+    <None Remove="Resources\Fonts\Segoe UI Bold Italic.ttf" />
+    <None Remove="Resources\Fonts\Segoe UI Bold.ttf" />
+    <None Remove="Resources\Fonts\Segoe UI Italic.ttf" />
+    <None Remove="Resources\Fonts\Segoe UI.ttf" />
+    <None Remove="Resources\login.png" />
+    <None Remove="Resources\notfound.png" />
+    <None Remove="Resources\paid.png" />
+    <None Remove="Resources\Reports\ItemReport.repx" />
+    <None Remove="Resources\Reports\PurchaseInvoice.repx" />
+    <None Remove="Resources\Reports\SaleInvoice.repx" />
+    <None Remove="Resources\XMessageBox\Error.png" />
+    <None Remove="Resources\XMessageBox\Information.png" />
+    <None Remove="Resources\XMessageBox\Question.png" />
+    <None Remove="Resources\XMessageBox\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\category.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\counterpos.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\counterpos.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\edit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FbrPosImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\XMessageBox\Error.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\XMessageBox\Information.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\XMessageBox\Question.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\XMessageBox\Warning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Resources\Fonts\Nunito-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Resources\login.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\paid.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Reports\SaleInvoice.repx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Reports\ItemReport.repx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Reports\PurchaseInvoice.repx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\notfound.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="devexpress.wpf.printing" Version="22.2.5" />
+    <PackageReference Include="devexpress.wpf.reporting" Version="22.2.5" />
+    <PackageReference Include="HandyControls" Version="3.4.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
+    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SciChart.Wpf.UI.Transitionz" Version="3.1.251" />
+    <PackageReference Include="squirrel.windows" Version="2.0.1" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="7.0.0" />
+    <PackageReference Include="WPF-UI" Version="2.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Other\FBRParametersWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\counterpos.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Properties\DesignTimeResources.xaml" Condition="'$(DesignTime)'=='true' OR ('$(SolutionPath)'!='' AND Exists('$(SolutionPath)') AND '$(BuildingInsideVisualStudio)'!='true' AND '$(BuildingInsideExpressionBlend)'!='true')">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Xpf.Themes.VS2019Dark.v22.2">
+      <HintPath>C:\Program Files\DevExpress 22.2\Components\Offline Packages\devexpress.wpf.themes.vs2019dark\22.2.5\lib\net6.0-windows\DevExpress.Xpf.Themes.VS2019Dark.v22.2.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Data.WPF">
+      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\WPF\20.3.0.47\precompiledassemblies\net5.0\Syncfusion.Data.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SfChart.WPF">
+      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\WPF\20.3.0.47\precompiledassemblies\net5.0\Syncfusion.SfChart.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SfGrid.WPF">
+      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\WPF\20.3.0.47\precompiledassemblies\net5.0\Syncfusion.SfGrid.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Shared.WPF">
+      <HintPath>C:\Program Files (x86)\Syncfusion\Essential Studio\WPF\20.3.0.47\precompiledassemblies\net5.0\Syncfusion.Shared.WPF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Nunito-Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Nunito-Light.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Nunito-VariableFont_wght.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Segoe UI Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Segoe UI Italic.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Segoe UI.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Other\FBRParametersWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

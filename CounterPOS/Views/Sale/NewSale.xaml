@@ -1,0 +1,974 @@
+﻿<UserControl
+    x:Class="CounterPOS.Views.NewSale"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:CounterPOS.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxcn="http://schemas.devexpress.com/winfx/2008/xaml/core/internal"
+    xmlns:dxp="http://schemas.devexpress.com/winfx/2008/xaml/printing"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prop="clr-namespace:CounterPOS.Properties"
+    xmlns:sf="http://schemas.syncfusion.com/wpf"
+    xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
+    xmlns:views="clr-namespace:CounterPOS.Views"
+    xmlns:wpfi="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    FontFamily="{StaticResource AppDefaultFont}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ContextMenu x:Key="LiveTransactionsRowMenu">
+            <wpfui:MenuItem
+                Command="{Binding DataContext.TransactionViewCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="live"
+                Header="View" />
+            <wpfui:MenuItem
+                Command="{Binding DataContext.TransactionDeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="live"
+                Header="Delete" />
+            <Separator />
+            <wpfui:MenuItem Header="Print">
+                <wpfui:MenuItem
+                    Command="{Binding DataContext.JustPrintInvoiceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    CommandParameter="1"
+                    Header="1 Copy" />
+                <wpfui:MenuItem
+                    Command="{Binding DataContext.JustPrintInvoiceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    CommandParameter="2"
+                    Header="2 Copy" />
+            </wpfui:MenuItem>
+        </ContextMenu>
+        <Style
+            x:Key="LiveTransactionRowStyle"
+            BasedOn="{StaticResource DataGridRowStyle.Small}"
+            TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource LiveTransactionsRowMenu}" />
+        </Style>
+
+        <ContextMenu x:Key="DeletedTransactionsRowMenu">
+            <wpfui:MenuItem
+                Command="{Binding DataContext.TransactionViewCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="deleted"
+                Header="View" />
+            <!--<wpfui:MenuItem
+                Command="{Binding DataContext.TransactionDeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="deleted"
+                Header="Delete" />-->
+        </ContextMenu>
+
+        <ContextMenu x:Key="PreviousTransactionsRowMenu">
+            <wpfui:MenuItem
+                Command="{Binding DataContext.PreviousTransactionViewCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="deleted"
+                Header="View" />
+            <wpfui:MenuItem
+                Command="{Binding DataContext.PreviousTransactionDeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                CommandParameter="deleted"
+                Header="Delete" />
+        </ContextMenu>
+
+
+        <Style
+            x:Key="DeletedTransactionRowStyle"
+            BasedOn="{StaticResource DataGridRowStyle.Small}"
+            TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource DeletedTransactionsRowMenu}" />
+        </Style>
+        <Style
+            x:Key="PreviousransactionRowStyle"
+            BasedOn="{StaticResource DataGridRowStyle.Small}"
+            TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource PreviousTransactionsRowMenu}" />
+        </Style>
+
+        <DataTemplate x:Key="TabControlHeaderTemplate">
+            <Grid VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    VerticalAlignment="Center"
+                    Text="{Binding}" />
+                <wpfui:Card
+                    Grid.Row="1"
+                    Margin="0,0,0,1"
+                    Padding="7,2"
+                    HorizontalAlignment="Left">
+                    <TextBlock
+                        Grid.Row="1"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="{DynamicResource FontSize-Normal}"
+                        Text="{Binding Path=DataContext.ItemsCount, RelativeSource={RelativeSource AncestorType=dx:DXTabItem}}" />
+                </wpfui:Card>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TabControlBackground">
+            <dxcn:TabBorder BorderMode="BorderBrush" />
+        </DataTemplate>
+        <DataTemplate x:Key="TabItemNormalBackground">
+            <dxcn:TabBorder
+                MinHeight="50"
+                Margin="0,0,5,2"
+                BorderBrush="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                BorderCornerRadius="5"
+                BorderMargin="0 0 5 2"
+                BorderThickness="1,1,1,1"
+                HoldBorderMargin="0 2 5 2" />
+        </DataTemplate>
+        <DataTemplate x:Key="TabItemHoverBackground">
+            <dxcn:TabBorder
+                Margin="0,0,5,2"
+                BorderBrush="{DynamicResource PrimaryBrush}"
+                BorderCornerRadius="5"
+                BorderMargin="0 0 5 2"
+                BorderThickness="1,1,1,1"
+                HoldBorderMargin="0 0 5 2" />
+        </DataTemplate>
+        <DataTemplate x:Key="TabItemSelectedBackground">
+            <dxcn:TabBorder
+                Margin="0,0,5,2"
+                BorderBackground="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource PrimaryBrush}"
+                BorderCornerRadius="5"
+                BorderMargin="0 0 5 2"
+                BorderThickness="5,1,1,1"
+                HoldBorderMargin="0 0 5 2" />
+        </DataTemplate>
+        <DataTemplate x:Key="TabItemFocusedBackground">
+            <dxcn:TabBorder
+                Margin="0,0,5,2"
+                BorderMargin="0, 0, 5, 2"
+                HoldBorderMargin="0 0 5 2" />
+        </DataTemplate>
+        <converter:NameToContentConverter x:Key="NameToContent" />
+        <converter:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <converter:BooleanToInverseVisibilityConverter x:Key="InverseBoolToVisibility" />
+    </UserControl.Resources>
+
+    <Grid Margin="7">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <!--  Transactions section  -->
+
+        <Grid tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding ShowTransactions, Converter={StaticResource BoolToVisibility}}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Padding="5"
+                Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                CornerRadius="3">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Style="{DynamicResource TextBlockTitle}"
+                            Text="History" />
+                        <wpfui:Button
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Command="{Binding HideTransactionsCommand}"
+                            Icon="Dismiss12" />
+                    </Grid>
+
+                    <wpfui:TextBox
+                        Grid.Row="1"
+                        Icon="Search12"
+                        IconPlacement="Right"
+                        PlaceholderText="Search Transaction"
+                        Text="{Binding TransactionFilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </Border>
+
+
+            <DataGrid
+                Grid.Row="1"
+                AutoGenerateColumns="False"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CellStyle="{DynamicResource CustomDatagridCellStyle}"
+                ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                IsReadOnly="True"
+                IsSynchronizedWithCurrentItem="True"
+                ItemsSource="{Binding FilteredTransactionsList, IsAsync=True}"
+                RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                RowStyle="{StaticResource LiveTransactionRowStyle}"
+                ScrollViewer.CanContentScroll="True"
+                SelectedItem="{Binding SelectedTransaction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectionMode="Single"
+                Style="{DynamicResource DataGrid.Small}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding InvoiceDate, StringFormat=D}"
+                        Header="Date" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding TransactionID, StringFormat=INV:\{0\}}"
+                        Header="OrderID" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Cashier}"
+                        Header="Cashier" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding TransactionType}"
+                        Header="Transaction" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PaymentType}"
+                        Header="Payment Type" />
+
+                    <DataGridTemplateColumn Width="*" Header="FBR">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <CheckBox
+                                    Grid.Row="0"
+                                    Content="FBR"
+                                    Focusable="False"
+                                    IsChecked="{Binding IsFBRInvoice}"
+                                    IsHitTestVisible="False"
+                                    Style="{DynamicResource DefaultCheckBoxStyle}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Total">
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Right" Text="{Binding GrandTotal, StringFormat=N2}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Border
+                Grid.Row="2"
+                Margin="-2"
+                Padding="5"
+                Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                CornerRadius="3">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Command="{Binding CopyCommand}" MouseAction="LeftClick" />
+                        </TextBlock.InputBindings>
+                        <Run Text="Transactions" />
+                        <Run Text="{Binding TotalTransactionCount, StringFormat=N0}" />
+                        <Run Text=", " />
+                    </TextBlock>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left">
+                        <Run Text="FBR Invoices" />
+                        <Run Text="{Binding FBRInvoicesCount, StringFormat=N0}" />
+                    </TextBlock>
+
+
+                    <TextBlock Grid.Column="2">
+                        <Run Text="Total" />
+                        <Run Text="{Binding TotalAmountSum, StringFormat=N2}" />
+                    </TextBlock>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding ShowDeletedTransactions, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Padding="7"
+                Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                CornerRadius="3">
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="5,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Style="{DynamicResource TextBlockTitle}"
+                        Text="Deleted Transactions" />
+
+                    <wpfui:Button
+                        Grid.Column="1"
+                        Margin="0,0,5,0"
+                        Padding="5"
+                        Command="{Binding GetDeletedTransactionsCommand}"
+                        Content="View" />
+
+                    <wpfui:Button
+                        Grid.Column="2"
+                        Margin="0,0,5,0"
+                        Command="{Binding DeleteTransactionsPermanentlyCommand}"
+                        Content="Delete All" />
+                    <wpfui:Button
+                        Grid.Column="3"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding HideTransactionsCommand}"
+                        Icon="Dismiss12" />
+                </Grid>
+            </Border>
+            <DataGrid
+                Grid.Row="1"
+                AutoGenerateColumns="False"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CellStyle="{DynamicResource CustomDatagridCellStyle}"
+                ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                IsReadOnly="True"
+                IsSynchronizedWithCurrentItem="True"
+                ItemsSource="{Binding DeletedTransactions, IsAsync=True}"
+                RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                RowStyle="{StaticResource DeletedTransactionRowStyle}"
+                ScrollViewer.CanContentScroll="True"
+                SelectedItem="{Binding SelectedDeletedTransaction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectionMode="Single"
+                Style="{DynamicResource DataGrid.Small}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding InvoiceDate, StringFormat=D}"
+                        Header="Date" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding TransactionID, StringFormat=INV:\{0\}}"
+                        Header="OrderID" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Cashier}"
+                        Header="Cashier" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding TransactionType}"
+                        Header="Transaction" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PaymentType}"
+                        Header="Payment Type" />
+
+                    <DataGridTemplateColumn Width="*" Header="FBR">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <CheckBox
+                                    Grid.Row="0"
+                                    Content="FBR"
+                                    Focusable="False"
+                                    IsChecked="{Binding IsFBRInvoice}"
+                                    IsHitTestVisible="False"
+                                    Style="{DynamicResource DefaultCheckBoxStyle}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Total">
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Right" Text="{Binding GrandTotal, StringFormat=N2}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Border
+                Grid.Row="2"
+                Margin="-2"
+                Padding="5"
+                Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                CornerRadius="3">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0">
+                        <Run Text="Transactions" />
+                        <Run Text="{Binding TotalDeletedTransactionCount, StringFormat=N0}" />
+                        <Run Text=", " />
+                    </TextBlock>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left">
+                        <Run Text="FBR Invoices" />
+                        <Run Text="{Binding DeletedFBRInvoicesCount, StringFormat=N0}" />
+                    </TextBlock>
+
+                    <TextBlock Grid.Column="2">
+                        <Run Text="Total" />
+                        <Run Text="{Binding DeletedTotalAmountSum, StringFormat=N2}" />
+                    </TextBlock>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  Sale Section  -->
+        <Grid
+            Margin="-2,-1,0,0"
+            tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                      To=1,
+                                                      Duration=100,
+                                                      TransitionOn=Visibility}"
+            tz:Transitionz.Visibility="{Binding ShowMainView, Converter={StaticResource BoolToVisibility}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Sale Left Section  -->
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <Grid
+                    Grid.Row="0"
+                    Margin="0,0,0,5"
+                    tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                              To=1,
+                                                              Duration=100,
+                                                              TransitionOn=Visibility}"
+                    tz:Transitionz.Visibility="{Binding IsPreviousOrdersViewVisible, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Border
+                        Grid.Row="0"
+                        Padding="7"
+                        Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        CornerRadius="3">
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Style="{DynamicResource TextBlockTitle}">
+                                <Run Text="Previous Orders for:" />
+                                <Run Foreground="{StaticResource SecondaryTextBrush}" Text="{Binding SelectedCustomerName}" />
+                            </TextBlock>
+
+
+                            <wpfui:Button
+                                Grid.Column="3"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding ShowPreviousOrderCommand}"
+                                Icon="Dismiss12" />
+                        </Grid>
+                    </Border>
+                    <DataGrid
+                        Grid.Row="1"
+                        AutoGenerateColumns="False"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        CellStyle="{DynamicResource CustomDatagridCellStyle}"
+                        ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                        FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                        IsReadOnly="True"
+                        IsSynchronizedWithCurrentItem="True"
+                        ItemsSource="{Binding PreviousOrdersList, IsAsync=True}"
+                        RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                        RowStyle="{StaticResource PreviousransactionRowStyle}"
+                        ScrollViewer.CanContentScroll="True"
+                        SelectedItem="{Binding SelectedPreviousOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectionMode="Single"
+                        Style="{DynamicResource DataGrid.Small}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="Auto"
+                                Binding="{Binding InvoiceDate, StringFormat=D}"
+                                Header="Date" />
+
+                            <DataGridTextColumn
+                                Width="Auto"
+                                Binding="{Binding TransactionID, StringFormat=INV:\{0\}}"
+                                Header="OrderID" />
+
+                            <DataGridTextColumn
+                                Width="Auto"
+                                Binding="{Binding Cashier}"
+                                Header="Cashier" />
+
+                            <DataGridTextColumn
+                                Width="Auto"
+                                Binding="{Binding TransactionType}"
+                                Header="Transaction" />
+
+                            <DataGridTextColumn
+                                Width="Auto"
+                                Binding="{Binding PaymentType}"
+                                Header="Payment Type" />
+
+                            <DataGridTemplateColumn Width="*" Header="FBR">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+
+                                        <CheckBox
+                                            Grid.Row="0"
+                                            Content="FBR"
+                                            Focusable="False"
+                                            IsChecked="{Binding IsFBRInvoice}"
+                                            IsHitTestVisible="False"
+                                            Style="{DynamicResource DefaultCheckBoxStyle}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Total">
+
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock HorizontalAlignment="Right" Text="{Binding GrandTotal, StringFormat=N2}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Border
+                        Grid.Row="2"
+                        Padding="5"
+                        Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        CornerRadius="3">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0">
+                                <Run Text="Transactions" />
+                                <Run Text="{Binding PreviousOrdersCount, StringFormat=N0}" />
+                                <Run Text=", " />
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Left">
+                                <Run Text="FBR Invoices" />
+                                <Run Text="{Binding FBRInvoicesCountInPreviousOrders, StringFormat=N0}" />
+                            </TextBlock>
+
+                            <TextBlock Grid.Column="2">
+                                <Run Text="Total" />
+                                <Run Text="{Binding TotalAmountSumForPreviousOrders, StringFormat=N2}" />
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+
+                <Grid
+                    Grid.Row="0"
+                    tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                              To=1,
+                                                              Duration=100,
+                                                              TransitionOn=Visibility}"
+                    tz:Transitionz.Visibility="{Binding IsPreviousOrdersViewVisible, Mode=TwoWay, Converter={StaticResource InverseBoolToVisibility}}">
+                    <dx:DXTabControl
+                        Margin="0,0,0,3"
+                        Padding="0"
+                        tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                                  To=1,
+                                                                  Duration=100,
+                                                                  TransitionOn=Visibility}"
+                        tz:Transitionz.Visibility="{Binding CreateUIMenu, Mode=TwoWay, Converter={StaticResource BoolToVisibility}}"
+                        ItemsSource="{Binding Tabs, IsAsync=True}"
+                        TabContentCacheMode="CacheTabsOnSelecting">
+
+                        <dx:DXTabControl.ItemContainerStyle>
+                            <Style TargetType="dx:DXTabItem">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                                <Setter Property="Header" Value="{Binding Header}" />
+                                <Setter Property="HeaderTemplate" Value="{StaticResource TabControlHeaderTemplate}" />
+                                <Setter Property="FontSize" Value="{StaticResource FontSize-Larger}" />
+                                <Setter Property="HoverBackgroundTemplate" Value="{StaticResource TabItemHoverBackground}" />
+                                <Setter Property="NormalBackgroundTemplate" Value="{StaticResource TabItemNormalBackground}" />
+                                <Setter Property="SelectedBackgroundTemplate" Value="{StaticResource TabItemSelectedBackground}" />
+                                <Setter Property="FocusedBackgroundTemplate" Value="{StaticResource TabItemFocusedBackground}" />
+                            </Style>
+                        </dx:DXTabControl.ItemContainerStyle>
+
+                        <dx:DXTabControl.ItemTemplate>
+                            <DataTemplate>
+                                <wpfi:FlowLayoutControl
+                                    Padding="0"
+                                    dx:ScrollBarExtensions.ScrollBarMode="TouchOverlap"
+                                    AllowAddFlowBreaksDuringItemMoving="True"
+                                    AnimateScrolling="True"
+                                    DragScrolling="True"
+                                    ItemsSource="{Binding Data, IsAsync=True}"
+                                    LayerSpace="4"
+                                    Orientation="Horizontal">
+                                    <wpfi:FlowLayoutControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Content="{Binding ViewName, Converter={StaticResource NameToContent}}" />
+                                        </DataTemplate>
+                                    </wpfi:FlowLayoutControl.ItemTemplate>
+                                </wpfi:FlowLayoutControl>
+                            </DataTemplate>
+                        </dx:DXTabControl.ItemTemplate>
+                        <dx:DXTabControl.BackgroundTemplate>
+                            <DataTemplate>
+                                <Border Background="Transparent" />
+                            </DataTemplate>
+                        </dx:DXTabControl.BackgroundTemplate>
+
+                        <dx:DXTabControl.View>
+                            <dx:TabControlScrollView
+                                AllowAnimation="True"
+                                HeaderAutoFill="{Binding HeaderAutoFill}"
+                                HeaderLocation="{Binding HeaderLocation}"
+                                HeaderOrientation="{Binding HeaderOrientation}"
+                                HideButtonShowMode="NoWhere"
+                                NewButtonShowMode="NoWhere"
+                                ScrollButtonShowMode="AutoHideBothButtons"
+                                ScrollViewer.PanningMode="HorizontalOnly" />
+                        </dx:DXTabControl.View>
+                    </dx:DXTabControl>
+                    <Grid
+                        Margin="0,0,0,5"
+                        tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                                  To=1,
+                                                                  Duration=100,
+                                                                  TransitionOn=Visibility}"
+                        tz:Transitionz.Visibility="{Binding CreateUIMenu, Mode=TwoWay, Converter={StaticResource InverseBoolToVisibility}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <wpfui:TextBox
+                            Grid.Row="0"
+                            Margin="0,0,0,5"
+                            Icon="Search12"
+                            PlaceholderText="Search Product"
+                            Text="{Binding ProductSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <DataGrid
+                            Grid.Row="1"
+                            AutoGenerateColumns="False"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            CellStyle="{DynamicResource DataGridCellStyle.Small}"
+                            ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                            FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                            HeadersVisibility="All"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding FilteredProductList, IsAsync=True}"
+                            RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                            SelectedItem="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectionMode="Single">
+                            <DataGrid.InputBindings>
+                                <MouseBinding Command="{Binding AddToCartListCommand}" MouseAction="LeftDoubleClick" />
+                            </DataGrid.InputBindings>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="Auto"
+                                    Binding="{Binding Identifier}"
+                                    Header="Barcode" />
+                                <DataGridTextColumn
+                                    Width="Auto"
+                                    Binding="{Binding Name}"
+                                    Header="Name" />
+                                <DataGridTemplateColumn Header="SalePrice">
+
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Right" Text="{Binding SalePrice, StringFormat=N2}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn
+                                    Width="*"
+                                    Binding="{Binding Description}"
+                                    Header="Description" />
+                                <DataGridTemplateColumn
+                                    Width="Auto"
+                                    CanUserResize="False"
+                                    CanUserSort="False"
+                                    IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <wpfui:Button
+                                                VerticalAlignment="Center"
+                                                Command="{Binding Path=DataContext.AddToCartListCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                                Content="Add"
+                                                FontSize="{StaticResource FontSize-Smaller}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+
+
+
+
+
+                <!--  Customer Selection and OrderNote  -->
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <wpfui:Button
+                            Grid.Column="0"
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,5,0"
+                            Command="{Binding ShowPreviousOrderCommand}"
+                            Icon="History16"
+                            IconFilled="True"
+                            ToolTip="Previous orders for the selected customer" />
+
+                        <Border
+                            Grid.Column="1"
+                            Margin="0,0,5,0"
+                            Padding="2,0,0,0"
+                            HorizontalAlignment="Stretch"
+                            ClipToBounds="True"
+                            CornerRadius="3"
+                            IsEnabled="{Binding IsPreviousOrdersViewVisible, Converter={StaticResource Boolean2BooleanReConverter}}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentTextFillColorTertiaryBrush}" />
+                                            <Setter Property="BorderThickness" Value="0.6,0.6,0.6,1.5" />
+                                            <Setter Property="Background" Value="{DynamicResource ControlFillColorInputActiveBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsKeyboardFocusWithin" Value="False">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource KeyboardFocusBorderColorBrush}" />
+                                            <Setter Property="BorderThickness" Value="0,0,0,1.4" />
+                                            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding SelectedCustomer.Blacklist}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource DarkDangerBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+
+
+                                </Style>
+                            </Border.Style>
+
+                            <sf:SfMultiColumnDropDownControl
+                                Grid.Column="0"
+                                Margin="0,0,-30,0"
+                                Padding="0"
+                                sf:SkinStorage.OverrideVisualStyle="False"
+                                AllowAutoComplete="True"
+                                AllowDiacriticSensitiveFiltering="False"
+                                AllowImmediatePopup="True"
+                                AllowIncrementalFiltering="True"
+                                AllowNullInput="True"
+                                AllowSpinOnMouseWheel="False"
+                                AutoGenerateColumns="False"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                DisplayMember="CustomerFull"
+                                FilterDelay="150"
+                                FontSize="{StaticResource FontSize-Large}"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                IsAutoPopupSize="True"
+                                ItemsSource="{Binding CustomerList, IsAsync=True}"
+                                PopupBackground="Transparent"
+                                PopupBorderBrush="Transparent"
+                                PopupBorderThickness="0"
+                                PopupDropDownGridBackground="{DynamicResource SystemFillColorSolidNeutralBackgroundBrush}"
+                                ResizingThumbVisibility="Collapsed"
+                                SearchCondition="Contains"
+                                SelectedItem="{Binding SelectedCustomer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectionMode="Single"
+                                TextSelectionOnFocus="True"
+                                ValueMember="CustomerFull"
+                                VirtualizingPanel.IsVirtualizing="True"
+                                VirtualizingPanel.VirtualizationMode="Recycling">
+                                <sf:SfMultiColumnDropDownControl.Columns>
+                                    <sf:GridTextColumn
+                                        ColumnSizer="Star"
+                                        HeaderText="Customers"
+                                        MappingName="CustomerFull" />
+                                </sf:SfMultiColumnDropDownControl.Columns>
+
+                            </sf:SfMultiColumnDropDownControl>
+                        </Border>
+
+                        <wpfui:Button
+                            Grid.Column="2"
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,5,0"
+                            Command="{Binding ShowNewCustomerViewCommand}"
+                            Icon="Add12" />
+
+                        <wpfui:Button
+                            Grid.Column="3"
+                            Width="40"
+                            Height="40"
+                            Command="{Binding ClearSelectedCustomer}"
+                            Icon="Subtract12" />
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <wpfui:Button
+                            Grid.Column="0"
+                            Width="85"
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Stretch"
+                            Appearance="Danger"
+                            Command="{Binding ResetCommand}"
+                            Content="Reset"
+                            FontSize="{StaticResource FontSize-Larger}" />
+                        <wpfui:TextBox
+                            Grid.Column="1"
+                            Height="75"
+                            MaxHeight="75"
+                            Margin="0,0,5,0"
+                            Padding="5"
+                            VerticalAlignment="Stretch"
+                            AcceptsReturn="True"
+                            FontSize="{StaticResource FontSize-Large}"
+                            PlaceholderText="Order Note"
+                            Text="{Binding OrderNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Left"
+                            TextWrapping="Wrap" />
+                        <wpfui:TextBox
+                            Grid.Column="2"
+                            Height="75"
+                            MaxHeight="75"
+                            Padding="5"
+                            VerticalAlignment="Stretch"
+                            AcceptsReturn="True"
+                            FontSize="{StaticResource FontSize-Large}"
+                            PlaceholderText="Customer Info"
+                            Text="{Binding CustomerDetails, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Left"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                Margin="2,0,2,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                BorderThickness="1"
+                Cursor="SizeWE"
+                ResizeBehavior="PreviousAndNext"
+                Style="{DynamicResource ToolBarThumbHorizontalStyle}" />
+            <!--  Sale Right Section  -->
+            <Grid Grid.Column="2">
+                <views:NewCustomerView tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding IsNewCustomerViewVisible, Converter={StaticResource BoolToVisibility}}" />
+                <views:ManageAdditionalChargesView tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding IsManageAdditionalChargesViewVisible, Converter={StaticResource BoolToVisibility}}" />
+                <views:CartSectionUC tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding IsCartSectionVisible, Converter={StaticResource BoolToVisibility}}" />
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,93 @@
+﻿<Window
+    x:Class="CounterPOS.Views.PaymentTypeWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prop="clr-namespace:CounterPOS.Properties"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Payment Type"
+    Width="500"
+    Height="650"
+    FontFamily="{StaticResource AppDefaultFont}"
+    ResizeMode="NoResize"
+    Style="{DynamicResource UiWindowNoResize}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources />
+    <Grid>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <wpfui:TitleBar
+            Title="Payment Type"
+            Grid.Row="0"
+            CanMaximize="False"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+        <Border
+            Grid.Row="1"
+            Padding="0"
+            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+            CornerRadius="3">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DataGrid
+                    Grid.Row="0"
+                    AutoGenerateColumns="False"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    CellStyle="{DynamicResource DataGridCellStyle.Small}"
+                    ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                    FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                    IsReadOnly="True"
+                    IsSynchronizedWithCurrentItem="True"
+                    ItemsSource="{Binding PaymentTypeList}"
+                    RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                    SelectionMode="Single"
+                    Style="{DynamicResource DataGrid.Small}">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding PaymentType}"
+                            Header="Payment Type" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Grid
+                    Grid.Row="1"
+                    Margin="15"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <wpfui:TextBox
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        PlaceholderText="*Payment Type"
+                        Text="{Binding NewPaymentType.PaymentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <wpfui:Button
+                        Grid.Column="1"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding AddPaymentTypeCommand}"
+                        Content="Add" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,307 @@
+﻿<UserControl
+    x:Class="CounterPOS.Views.SaleSettingsUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:converter="clr-namespace:CounterPOS.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:BooleanToInverseVisibilityConverter x:Key="InverseBoolToVisibility" />
+        <converter:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <wpfui:NavigationSeparator Grid.Row="0" />
+        <wpfui:DynamicScrollViewer Grid.Row="1">
+
+            <Grid
+                Grid.Row="1"
+                Margin="10,10,10,5"
+                VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                        <TextBlock Margin="3,0,0,2" Text="Date" />
+                        <DatePicker
+                            DisplayDateEnd="{Binding Mode=OneWay, Source={x:Static System:DateTime.Today}}"
+                            SelectedDate="{Binding Transaction.InvoiceDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{DynamicResource DefaultDatePickerStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Margin="3,0,0,2" Text="Payment Type" />
+                        <ComboBox
+                            DisplayMemberPath="PaymentType"
+                            ItemsSource="{Binding PaymentTypeList, IsAsync=True}"
+                            SelectedItem="{Binding SelectedPaymentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedValuePath="PaymentType"
+                            Style="{DynamicResource DefaultComboBoxStyle}"
+                            Text="{Binding SelectedPaymentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                </Grid>
+                <Grid Grid.Row="1" Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox
+                        Grid.Column="0"
+                        Content="FBR INvoice"
+                        IsChecked="{Binding Transaction.IsFBRInvoice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{DynamicResource DefaultCheckBoxStyle}" />
+
+                    <wpfui:Hyperlink
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Command="{Binding ShowManageAdditionalChargesViewCommand}"
+                        Content="Manage Additional Charges" />
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,5"
+                        Padding="5"
+                        HorizontalAlignment="Center"
+                        Text="Discount &amp; Tax" />
+                    <Grid
+                        Grid.Row="1"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <RadioButton
+                            Grid.Column="0"
+                            Margin="0,0,5,0"
+                            Content="On Total"
+                            IsChecked="{Binding DiscountAndTaxOnTotal}"
+                            Style="{DynamicResource DefaultToggleButtonStyle}" />
+
+                        <RadioButton
+                            Grid.Column="1"
+                            Content="Per Item"
+                            IsChecked="{Binding DiscountAndTaxPerItem}"
+                            Style="{DynamicResource DefaultToggleButtonStyle}" />
+                    </Grid>
+                    <Grid
+                        Grid.Row="2"
+                        Margin="0,0,0,5"
+                        Visibility="{Binding DiscountAndTaxPerItem, Converter={StaticResource InverseBoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,5,5">
+                            <TextBlock Margin="3,0,0,2" Text="Discount %" />
+                            <wpfui:TextBox IsEnabled="{Binding GiveDiscount}" Text="{Binding Transaction.DiscountValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1">
+                            <TextBlock Margin="3,0,0,2" Text="Discount Price" />
+                            <wpfui:TextBox
+                                IsEnabled="{Binding GiveDiscount}"
+                                IsReadOnly="True"
+                                Text="{Binding Transaction.DiscountPrice, StringFormat=N2, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,5,0">
+                            <TextBlock Margin="3,0,0,2" Text="GST %" />
+                            <wpfui:TextBox IsEnabled="{Binding GiveDiscount}" Text="{Binding Transaction.GSTValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <TextBlock Margin="3,0,0,2" Text="GST Price" />
+                            <wpfui:TextBox
+                                IsEnabled="{Binding GiveDiscount}"
+                                IsReadOnly="True"
+                                Text="{Binding Transaction.GSTPrice, StringFormat=N2, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                            <TextBlock Margin="3,0,0,2" Text="Cash" />
+                            <wpfui:TextBox
+                                MinWidth="150"
+                                PlaceholderText="Cash"
+                                Text="{Binding Transaction.Cash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Margin="3,0,0,2" Text="Change" />
+                            <wpfui:TextBox
+                                MinWidth="150"
+                                PlaceholderText="Change"
+                                Text="{Binding Transaction.Change, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <wpfui:ClientAreaBorder
+                    Grid.Row="3"
+                    Margin="0,10,0,0"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    Style="{DynamicResource BorderRegion}"
+                    Visibility="{Binding CreateUIMenu, Converter={StaticResource BoolToVisibility}}">
+
+                    <Grid>
+
+
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="{StaticResource FontSize-Larger}"
+                            Style="{DynamicResource TextBlockSubTitle}"
+                            Text="UI Menu Settings" />
+
+
+                        <Grid Grid.Row="1" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Margin="3,0,0,2" Text="Button Width" />
+                                <wpfui:NumberBox
+                                    ClearButtonEnabled="False"
+                                    Max="70"
+                                    Min="20"
+                                    Value="{Binding UIMenuButtonWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Margin="3,0,0,2" Text="Button Height" />
+                                <wpfui:NumberBox
+                                    ClearButtonEnabled="False"
+                                    Max="70"
+                                    Min="20"
+                                    Value="{Binding UIMenuButtonHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="2" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Margin="3,0,0,2" Text="Image Width" />
+                                <wpfui:NumberBox
+                                    ClearButtonEnabled="False"
+                                    Max="90"
+                                    Min="50"
+                                    Value="{Binding UIMenuItemProductImageWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Margin="3,0,0,2" Text="Image Height" />
+                                <wpfui:NumberBox
+                                    ClearButtonEnabled="False"
+                                    Max="90"
+                                    Min="50"
+                                    Value="{Binding UIMenuItemProductImageHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Grid.Row="3" Margin="0,0,0,5">
+                            <TextBlock Margin="3,0,0,2" Text="Item Name Font Size" />
+                            <wpfui:NumberBox
+                                ClearButtonEnabled="False"
+                                Max="18"
+                                Min="8"
+                                Value="{Binding UIMenuItemNameFontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="4" Margin="0,0,0,5">
+                            <TextBlock Margin="3,0,0,2" Text="Tab Location" />
+                            <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Text="{Binding HeaderLocation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ComboBoxItem Content="Left" />
+                                <ComboBoxItem Content="Top" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="5" Margin="0,0,0,5">
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Margin="3,0,0,2" Text="Tab Orientation" />
+                                <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Text="{Binding HeaderOrientation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBoxItem Content="Horizontal" />
+                                    <ComboBoxItem Content="Vertical" />
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <CheckBox
+                            Grid.Row="6"
+                            Margin="0,0,0,5"
+                            Content="Header Fill"
+                            IsChecked="{Binding HeaderAutoFill}"
+                            Style="{DynamicResource DefaultCheckBoxStyle}" />
+
+                        <wpfui:Button
+                            Grid.Row="7"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding SaveMenuUISettingsCommand}"
+                            Content="Save" />
+                        <wpfui:Hyperlink
+                            Grid.Row="8"
+                            HorizontalAlignment="Center"
+                            Command="{Binding SetMenuSettingDefaultCommand}"
+                            Content="Set Default" />
+                    </Grid>
+                </wpfui:ClientAreaBorder>
+            </Grid>
+        </wpfui:DynamicScrollViewer>
+    </Grid>
+</UserControl>

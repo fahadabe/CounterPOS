@@ -1,0 +1,99 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CounterPOS.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultDiscountValue" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ShowInvoiceOnCreating" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CreateUIMenuAtStartup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IsDefaultFBRInvoice" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DiscountAndTaxOnTotal" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LastUsedUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">admin</Value>
+    </Setting>
+    <Setting Name="UIMenuButtonWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="UIMenuButtonHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="UIMenuItemNameFontSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="UIMenuItemProductImageWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="UIMenuItemProductImageHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="PictureWatermark" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="TextWatermark" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="InvoiceWatermarkText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Paid</Value>
+    </Setting>
+    <Setting Name="InvoiceWatermarkFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Microsoft Sans Serif, 48pt</Value>
+    </Setting>
+    <Setting Name="InvoiceWatermarkTextTransparency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">190</Value>
+    </Setting>
+    <Setting Name="InvoiceWatermarkImageTransparency" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">190</Value>
+    </Setting>
+    <Setting Name="DefaultGSTValue" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DiscountAndTaxPerItem" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DefaultPaymentType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cash</Value>
+    </Setting>
+    <Setting Name="ChangeToThemeName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Light</Value>
+    </Setting>
+    <Setting Name="HandyTheme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dark</Value>
+    </Setting>
+    <Setting Name="WPFUITheme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dark</Value>
+    </Setting>
+    <Setting Name="AccentBrush" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#03A9F4</Value>
+    </Setting>
+    <Setting Name="HeaderAutoFill" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="HeaderLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Left</Value>
+    </Setting>
+    <Setting Name="HeaderOrientation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Horizontal</Value>
+    </Setting>
+    <Setting Name="RowHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">40</Value>
+    </Setting>
+    <Setting Name="RowFontSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ShowCurrentSale" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PrintCopies" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

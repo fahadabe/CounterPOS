@@ -1,0 +1,204 @@
+﻿<UserControl
+    x:Class="CounterPOS.Views.Expanse"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:CounterPOS.Converter"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:prop="clr-namespace:CounterPOS.Properties"
+    xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
+    xmlns:views="clr-namespace:CounterPOS.Views"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <UserControl.Resources>
+        <converter:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <converter:BooleanToInverseVisibilityConverter x:Key="InverseBoolToVisibility" />
+        <ContextMenu x:Key="ExpanseRowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <wpfui:MenuItem Command="{Binding DataContext.ShowEditExpanseViewCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Header="Edit" />
+            <wpfui:MenuItem
+                Margin="0,0,0,3"
+                Command="{Binding DataContext.DeleteExpanseCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                Header="Delete" />
+        </ContextMenu>
+        <Style
+            x:Key="ExpanseRowStyle"
+            BasedOn="{StaticResource DataGridRowStyle.Small}"
+            TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource ExpanseRowMenu}" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="7">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+
+        <Border
+            Grid.Column="0"
+            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+            CornerRadius="5">
+
+            <Grid Grid.Row="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Margin="0"
+                    Padding="5"
+                    Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    CornerRadius="3 3 0 0">
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <wpfui:Hyperlink
+                                Grid.Column="0"
+                                Command="{Binding ShowNewExpanseViewCommand}"
+                                Content="New"
+                                Icon="Add28" />
+
+                            <wpfui:Hyperlink
+                                Grid.Column="1"
+                                Command="{Binding ShowEditExpanseViewCommand}"
+                                Content="Edit"
+                                Icon="Edit16" />
+
+                            <wpfui:Hyperlink
+                                Grid.Column="2"
+                                Command="{Binding DeleteExpanseCommand}"
+                                Content="Delete"
+                                Icon="Delete48" />
+
+                            <wpfui:Hyperlink
+                                Grid.Column="3"
+                                Command="{Binding NewExpanseCategoryWindowCommand}"
+                                Content="Expanse Category"
+                                Icon="Board16" />
+
+                            <wpfui:Hyperlink
+                                Grid.Column="4"
+                                Command="{Binding LoadDataCommand}"
+                                Content="Refresh"
+                                Icon="ArrowCounterclockwise12" />
+                        </Grid>
+
+                        <wpfui:TextBox
+                            Grid.Row="1"
+                            Margin="0,5,0,2"
+                            Icon="Search12"
+                            IconPlacement="Right"
+                            PlaceholderText="Search Expanse"
+                            Text="{Binding ExpanseFilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </Border>
+
+                <DataGrid
+                    Grid.Row="2"
+                    AutoGenerateColumns="False"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    CellStyle="{DynamicResource CustomDatagridCellStyle}"
+                    ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                    FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                    IsReadOnly="True"
+                    IsSynchronizedWithCurrentItem="True"
+                    ItemsSource="{Binding FilteredExpanseList, IsAsync=True}"
+                    RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                    RowStyle="{StaticResource ExpanseRowStyle}"
+                    ScrollViewer.CanContentScroll="True"
+                    SelectedItem="{Binding SelectedExpanse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionMode="Single"
+                    Style="{DynamicResource DataGrid.Small}">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding ExpanseDate, StringFormat=d}"
+                            Header="Date" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding ExpanseCategory}"
+                            Header="Category" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding ExpansesDescription}"
+                            Header="Description" />
+
+                        <DataGridTemplateColumn Header="Amount">
+
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Right" Text="{Binding Amount, StringFormat=N2}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Border
+                    Grid.Row="3"
+                    Margin="0"
+                    Padding="5"
+                    Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    CornerRadius="0 0 3 3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Left">
+                            <Run Text="Expanses" />
+                            <Run Text="{Binding ExpanseCount, StringFormat=N0}" />
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="1">
+                            <Run Text="Total" />
+                            <Run Text="{Binding ExpanseTotalAmount, StringFormat=N2}" />
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <views:NewExpanseView
+            Grid.Column="1"
+            Margin="5,0,0,0"
+            tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                      To=1,
+                                                      Duration=100,
+                                                      TransitionOn=Visibility}"
+            tz:Transitionz.Visibility="{Binding IsNewExpanseViewVisible, Converter={StaticResource BoolToVisibility}}" />
+        <views:ExpanseDetailsView
+            Grid.Column="1"
+            Margin="5,0,0,0"
+            tz:Transitionz.Opacity="{tz:OpacityParams From=0,
+                                                      To=1,
+                                                      Duration=100,
+                                                      TransitionOn=Visibility}"
+            tz:Transitionz.Visibility="{Binding IsEditExpanseViewVisible, Converter={StaticResource BoolToVisibility}}" />
+
+    </Grid>
+</UserControl>

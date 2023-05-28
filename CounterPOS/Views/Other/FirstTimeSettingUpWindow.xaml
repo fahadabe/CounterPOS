@@ -1,0 +1,276 @@
+﻿<Window
+    x:Class="CounterPOS.Views.FirstTimeSettingUpWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    x:Name="SettingUpWindow"
+    Title="Setting Up"
+    Width="900"
+    FontFamily="{StaticResource AppDefaultFont}"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    Style="{DynamicResource UiWindow}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <Style TargetType="hc:Tag">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <wpfui:TitleBar
+            Title="Setting Up"
+            Grid.Row="0"
+            CanMaximize="False"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+        <Border
+            Grid.Row="1"
+            Padding="10"
+            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+            CornerRadius="10 10 0 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*" />
+                    <ColumnDefinition Width="4*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Grid.Column="0"
+                    Padding="5"
+                    Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    CornerRadius="7">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            Margin="-5,-5,-5,8"
+                            Padding="5"
+                            VerticalAlignment="Top"
+                            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            CornerRadius="3 3 0 0">
+                            <TextBlock HorizontalAlignment="Center" Text="Business Info" />
+                        </Border>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid
+                                Grid.Column="0"
+                                Margin="0,0,5,0"
+                                VerticalAlignment="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="*Company Title" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Country" />
+                                    <ComboBox
+                                        IsEditable="True"
+                                        IsTextSearchCaseSensitive="False"
+                                        IsTextSearchEnabled="True"
+                                        ItemsSource="{Binding CountryList}"
+                                        Style="{DynamicResource DefaultComboBoxStyle}"
+                                        Text="{Binding NewCompanyDetails.Country, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Starting Year" />
+                                    <DatePicker
+                                        DisplayDateEnd="{Binding Mode=OneWay, Source={x:Static System:DateTime.Today}}"
+                                        SelectedDate="{Binding NewCompanyDetails.StartYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{DynamicResource DefaultDatePickerStyle}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="3" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="*Address1" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.Address1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="4" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Address2" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.Address2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="5" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Email" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="6" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="*Phone" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="7" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Print Message1" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.PrintMessage1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="8" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Print Message2" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.PrintMessage2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="9" Margin="0,0,0,5">
+                                    <TextBlock Margin="3,0,0,2" Text="Currency Symbol" />
+                                    <wpfui:TextBox Text="{Binding NewCompanyDetails.CurrencySymbol, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Column="1" VerticalAlignment="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Image
+                                    Grid.Row="0"
+                                    MinWidth="100"
+                                    MinHeight="100"
+                                    MaxWidth="100"
+                                    MaxHeight="100"
+                                    Margin="0,0,0,5"
+                                    Source="{Binding NewLogo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <StackPanel
+                                    Grid.Row="2"
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <wpfui:Button
+                                        Margin="0,0,5,0"
+                                        Command="{Binding BrowseCompanyLogoCommand}"
+                                        Icon="Add12" />
+
+                                    <wpfui:Button Command="{Binding RemoveCompanyLogoCommand}" Icon="Subtract12" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,0,0,10"
+                    Padding="5"
+                    Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    CornerRadius="3">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            Grid.Row="0"
+                            Margin="-5,-5,-5,8"
+                            Padding="5"
+                            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            CornerRadius="3 3 0 0">
+                            <TextBlock HorizontalAlignment="Center" Text="Add User" />
+                        </Border>
+
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="0,0,0,5">
+                                <TextBlock Margin="3,0,0,2" Text="*Username" />
+                                <wpfui:TextBox Margin="0,0,0,5" Text="{Binding NewUser.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1">
+                                <TextBlock Margin="3,0,0,2" Text="*Password" />
+                                <wpfui:TextBox Text="{Binding NewUser.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Padding="5"
+                    Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    CornerRadius="3">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Border
+                            Grid.Row="0"
+                            Margin="-5,-5,-5,8"
+                            Padding="5"
+                            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            CornerRadius="3 3 0 0">
+                            <TextBlock HorizontalAlignment="Center" Text="FBR Parameters" />
+                        </Border>
+
+                        <StackPanel Grid.Row="1" Margin="0,0,0,5">
+                            <TextBlock Margin="3,0,0,2" Text="POSID" />
+                            <wpfui:TextBox Margin="0,0,0,5" Text="{Binding FBRParameters.POSID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+
+                    </Grid>
+                </Border>
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="0,10,0,0"
+                    Padding="5"
+                    Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    CornerRadius="3">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource DangerBrush}"
+                            Text="Fields marked with (*) are mandatory." />
+                        <wpfui:Button
+                            HorizontalAlignment="Right"
+                            Command="{Binding InserInitialDataCommand}"
+                            CommandParameter="{Binding ElementName=SettingUpWindow}"
+                            Content="Save" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

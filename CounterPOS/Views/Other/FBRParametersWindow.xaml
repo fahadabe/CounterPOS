@@ -1,0 +1,78 @@
+﻿<Window
+    x:Class="CounterPOS.Views.FBRParametersWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    FontFamily="{StaticResource AppDefaultFont}"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    Style="{DynamicResource UiWindow}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Grid>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <wpfui:TitleBar
+            Title="FBR Parameters"
+            Grid.Row="0"
+            CanMaximize="False"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+        <Border
+            Grid.Row="1"
+            Padding="10"
+            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+            CornerRadius="3 3 0 0">
+            <Grid VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,5">
+                    <TextBlock Margin="3,0,0,2" Text="POSID" />
+                    <wpfui:TextBox Text="{Binding FBRParametersModel.POSID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+
+
+
+
+                <Grid Grid.Row="1" Margin="5,10,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="0,0,100,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding ServiceStatus, StringFormat='Fiscalization Service : {0}'}" />
+
+
+
+
+                    <wpfui:Button
+                        Grid.Column="1"
+                        Command="{Binding SaveFBRParametersCommand}"
+                        Content="Save" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

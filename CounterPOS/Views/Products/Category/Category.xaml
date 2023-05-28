@@ -1,0 +1,107 @@
+﻿<Window
+    x:Class="CounterPOS.Views.Category.Category"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prop="clr-namespace:CounterPOS.Properties"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Category"
+    Width="500"
+    Height="650"
+    FontFamily="{StaticResource AppDefaultFont}"
+    Icon="/Resources/category.png"
+    ResizeMode="NoResize"
+    Style="{DynamicResource UiWindowNoResize}"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="ToolWindow"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <ContextMenu x:Key="CategoryRowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <wpfui:MenuItem Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Header="Delete" />
+        </ContextMenu>
+        <Style
+            x:Key="CategoryRowStyle"
+            BasedOn="{StaticResource DataGridRowStyle.Small}"
+            TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource CategoryRowMenu}" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <wpfui:TitleBar
+            Title="Caterory"
+            Grid.Row="0"
+            CanMaximize="False"
+            Icon="/Resources/category.png"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+        <Border
+            Grid.Row="1"
+            Padding="0"
+            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+            CornerRadius="0">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DataGrid
+                    Grid.Row="0"
+                    AutoGenerateColumns="False"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    CellStyle="{DynamicResource DataGridCellStyle.Small}"
+                    ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                    FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                    IsReadOnly="True"
+                    IsSynchronizedWithCurrentItem="True"
+                    ItemsSource="{Binding CategoryList}"
+                    RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                    RowStyle="{StaticResource CategoryRowStyle}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    SelectionMode="Single"
+                    Style="{DynamicResource DataGrid.Small}">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Category}"
+                            Header="Categories" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Grid
+                    Grid.Row="1"
+                    Margin="15"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <wpfui:TextBox
+                        Margin="0,0,5,0"
+                        PlaceholderText="*Category"
+                        Text="{Binding NewCategory.Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <wpfui:Button
+                        Grid.Column="1"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding AddCategoryCommand}"
+                        Content="Add" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

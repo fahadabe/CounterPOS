@@ -1,0 +1,652 @@
+﻿<UserControl
+    x:Class="CounterPOS.Views.Purchase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:CounterPOS.Converter" xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prop="clr-namespace:CounterPOS.Properties"
+    xmlns:sf="http://schemas.syncfusion.com/wpf"
+    xmlns:tz="http://schemas.abtsoftware.co.uk/transitionz"
+    xmlns:views="clr-namespace:CounterPOS.Views"
+    xmlns:wpfi="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ContextMenu x:Key="TransactionsRowMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <wpfui:MenuItem Command="{Binding DataContext.PurchaseTransactionViewCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Header="View" />
+            <wpfui:MenuItem Command="{Binding DataContext.PurchaseTransactionDeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Header="Delete" />
+            <Separator />
+            <wpfui:MenuItem Header="Print">
+                <wpfui:MenuItem
+                    Command="{Binding DataContext.JustPrintInvoiceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    CommandParameter="1"
+                    Header="1 Copy" />
+                <wpfui:MenuItem
+                    Command="{Binding DataContext.JustPrintInvoiceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                    CommandParameter="2"
+                    Header="2 Copy" />
+            </wpfui:MenuItem>
+        </ContextMenu>
+        <Style
+            x:Key="TransactionRowStyle"
+            BasedOn="{StaticResource DataGridRowStyle.Small}"
+            TargetType="{x:Type DataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource TransactionsRowMenu}" />
+        </Style>
+
+        <converter:NameToContentConverter x:Key="NameToContent" />
+        <converter:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <converter:BooleanToInverseVisibilityConverter x:Key="InverseBoolToVisibility" />
+    </UserControl.Resources>
+
+    <Grid Margin="7">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <Grid tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding ShowTransactions, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Padding="5"
+                Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                CornerRadius="3">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <RadioButton
+                            Grid.Column="0"
+                            Margin="0,0,5,0"
+                            Command="{Binding GetTransactionsCommand}"
+                            CommandParameter="Yesterday"
+                            Content="Yesterday"
+                            Style="{DynamicResource DefaultToggleButtonStyle}" />
+                        <RadioButton
+                            Grid.Column="1"
+                            Command="{Binding GetTransactionsCommand}"
+                            CommandParameter="Today"
+                            Content="Today"
+                            IsChecked="True"
+                            Style="{DynamicResource DefaultToggleButtonStyle}" />
+                        <wpfui:Button
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            Command="{Binding ShowTransactionsCommand}"
+                            Icon="Dismiss12" />
+                    </Grid>
+
+                    <wpfui:TextBox
+                        Grid.Row="1"
+                        Icon="Search12"
+                        IconPlacement="Right"
+                        PlaceholderText="Search Transaction"
+                        Text="{Binding TransactionSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </Border>
+
+            <DataGrid
+                Grid.Row="1"
+                AutoGenerateColumns="False"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                CellStyle="{DynamicResource CustomDatagridCellStyle}"
+                ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                IsReadOnly="True"
+                IsSynchronizedWithCurrentItem="True"
+                ItemsSource="{Binding FilteredTransactionsList, IsAsync=True}"
+                RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                RowStyle="{StaticResource TransactionRowStyle}"
+                ScrollViewer.CanContentScroll="True"
+                SelectedItem="{Binding SelectedPurchase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PurchaseDate, StringFormat=d}"
+                        Header="Date" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PurchaseID, StringFormat=PUR:\{0\}}"
+                        Header="PurchaseID" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding TransactionType}"
+                        Header="Transaction" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PaymentType}"
+                        Header="Payment Type" />
+
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PurchaseBY}"
+                        Header="Cashier" />
+
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding SupplierName}"
+                        Header="Supplier" />
+
+                    <DataGridTemplateColumn Header="Total">
+
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Right" Text="{Binding GrandTotal, StringFormat=N2}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Border
+                Grid.Row="2"
+                Margin="-2"
+                Padding="5"
+                Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                CornerRadius="3">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0">
+                        <Run Text="Transactions" />
+                        <Run Text="{Binding TotalTransactionCount, StringFormat=N0}" />
+                    </TextBlock>
+
+                    <TextBlock Grid.Column="2">
+                        <Run Text="Total" />
+                        <Run Text="{Binding TotalAmountSum, StringFormat=N2}" />
+                    </TextBlock>
+                </Grid>
+            </Border>
+        </Grid>
+        <Grid tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding ShowTransactions, Converter={StaticResource InverseBoolToVisibility}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <wpfui:Button
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding LoadDataCommand}"
+                        Content="Refresh" />
+                    <wpfui:TextBox
+                        Grid.Column="1"
+                        Margin="0,0,5,0"
+                        Icon="Search12"
+                        PlaceholderText="Search Product"
+                        Text="{Binding ProductSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <wpfui:Button
+                        Grid.Column="2"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding ShowTransactionsCommand}"
+                        Content="Transactions" />
+                </Grid>
+                <DataGrid
+                    Grid.Row="1"
+                    AutoGenerateColumns="False"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    CellStyle="{DynamicResource DataGridCellStyle.Small}"
+                    ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle.Small}"
+                    FontSize="{Binding Source={x:Static prop:Settings.Default}, Path=RowFontSize, Mode=TwoWay}"
+                    HeadersVisibility="All"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding FilteredProductList, IsAsync=True}"
+                    RowHeight="{Binding Source={x:Static prop:Settings.Default}, Path=RowHeight, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedProduct, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    SelectionMode="Single">
+                    <DataGrid.InputBindings>
+                        <MouseBinding Command="{Binding AddToPurchaseListCommand}" MouseAction="LeftDoubleClick" />
+                    </DataGrid.InputBindings>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Identifier}"
+                            Header="Barcode" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Name}"
+                            Header="Name" />
+                        <DataGridTextColumn
+                            Width="Auto"
+                            Binding="{Binding Category}"
+                            Header="Category" />
+
+                        <DataGridTemplateColumn Header="Purchase Price">
+
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Right" Text="{Binding PurchasePrice, StringFormat=N2}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Sale Price">
+
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Right" Text="{Binding SalePrice, StringFormat=N2}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Description}"
+                            Header="Description" />
+
+                        <DataGridTemplateColumn
+                            Width="Auto"
+                            CanUserResize="False"
+                            CanUserSort="False"
+                            IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <wpfui:Button
+                                        VerticalAlignment="Center"
+                                        Command="{Binding Path=DataContext.AddToPurchaseListCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        Content="Add"
+                                        FontSize="{StaticResource FontSize-Smaller}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <wpfui:Button
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Stretch"
+                        Appearance="Danger"
+                        Command="{Binding ResetAllCommand}"
+                        Content="Reset"
+                        FontSize="{StaticResource FontSize-Larger}" />
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                Grid.Column="0"
+                                Margin="0,0,5,0"
+                                Padding="2,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                ClipToBounds="True"
+                                CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource AccentTextFillColorTertiaryBrush}" />
+                                                <Setter Property="BorderThickness" Value="0.7,0.7,0.7,1.5" />
+                                                <Setter Property="Background" Value="{DynamicResource ControlFillColorInputActiveBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="False">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource KeyboardFocusBorderColorBrush}" />
+                                                <Setter Property="BorderThickness" Value="0,0,0,1.4" />
+                                                <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <sf:SfMultiColumnDropDownControl
+                                    Grid.Column="0"
+                                    Margin="0,0,-30,0"
+                                    Padding="0"
+                                    sf:SkinStorage.OverrideVisualStyle="False"
+                                    AllowAutoComplete="False"
+                                    AllowDiacriticSensitiveFiltering="False"
+                                    AllowImmediatePopup="True"
+                                    AllowIncrementalFiltering="False"
+                                    AllowNullInput="True"
+                                    AllowSpinOnMouseWheel="False"
+                                    AutoGenerateColumns="False"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
+                                    DisplayMember="SupplierFull"
+                                    FilterDelay="500"
+                                    FontSize="{StaticResource FontSize-Large}"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    IsAutoPopupSize="True"
+                                    IsDropDownOpen="False"
+                                    ItemsSource="{Binding SupplierList, IsAsync=True}"
+                                    PopupBorderBrush="AliceBlue"
+                                    PopupBorderThickness="0"
+                                    PopupDropDownGridBackground="{DynamicResource SystemFillColorSolidNeutralBackgroundBrush}"
+                                    ResizingThumbVisibility="Collapsed"
+                                    SearchCondition="Contains"
+                                    SelectedItem="{Binding ListSelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectionMode="Single"
+                                    TextSelectionOnFocus="True"
+                                    ValueMember="SupplierFull"
+                                    VirtualizingPanel.IsVirtualizing="True"
+                                    VirtualizingPanel.VirtualizationMode="Recycling">
+                                    <sf:SfMultiColumnDropDownControl.Columns>
+                                        <sf:GridTextColumn
+                                            ColumnSizer="Star"
+                                            HeaderText="Customers"
+                                            MappingName="SupplierFull" />
+                                    </sf:SfMultiColumnDropDownControl.Columns>
+                                </sf:SfMultiColumnDropDownControl>
+                            </Border>
+
+                            <wpfui:Button
+                                Grid.Column="1"
+                                Width="40"
+                                Height="40"
+                                Margin="0,0,5,0"
+                                hc:IconElement.Geometry="{DynamicResource AddGeometry}"
+                                Command="{Binding ShowNewSupplierViewCommand}"
+                                Icon="Add12" />
+
+                            <wpfui:Button
+                                Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                hc:IconElement.Geometry="{DynamicResource RemoveGeometry}"
+                                Command="{Binding ClearSelectedSupplierCommand}"
+                                Icon="Subtract12" />
+                        </Grid>
+
+                        <wpfui:TextBox
+                            Grid.Row="1"
+                            Padding="5"
+                            HorizontalAlignment="Stretch"
+                            FontSize="{StaticResource FontSize-Larger}"
+                            PlaceholderText="Purchase Note"
+                            Text="{Binding NewPurchase.PurchaseNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                Margin="2,0,2,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Stretch"
+                BorderThickness="1"
+                Cursor="SizeWE"
+                ResizeBehavior="PreviousAndNext"
+                Style="{DynamicResource ToolBarThumbHorizontalStyle}" />
+            <Grid Grid.Column="2">
+
+                <views:NewSupplierView tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding IsNewSupplierViewVisible, Converter={StaticResource BoolToVisibility}}" />
+                <Grid tz:Transitionz.Opacity="{tz:OpacityParams From=0, To=1, Duration=100, TransitionOn=Visibility}" tz:Transitionz.Visibility="{Binding IsNewSupplierViewVisible, Converter={StaticResource InverseBoolToVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <wpfui:CardExpander
+                        Grid.Row="0"
+                        Margin="0,0,0,5"
+                        Padding="5,0"
+                        ExpandDirection="Down"
+                        Header="Purchase Setting">
+
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                    <TextBlock Margin="3,0,0,2" Text="Date" />
+                                    <DatePicker DisplayDateEnd="{Binding Mode=OneWay, Source={x:Static System:DateTime.Today}}" SelectedDate="{Binding NewPurchase.PurchaseDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource DefaultDatePickerStyle}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Margin="3,0,0,2" Text="Payment Type" />
+                                    <ComboBox
+                                        VerticalAlignment="Bottom"
+                                        VerticalContentAlignment="Bottom"
+                                        DisplayMemberPath="PaymentType"
+                                        ItemsSource="{Binding PaymentTypeList, IsAsync=True}"
+                                        SelectedItem="{Binding SelectedPaymentType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        SelectedValuePath="PaymentType"
+                                        Style="{DynamicResource DefaultComboBoxStyle}" />
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="0,0,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Text="Discount &amp; Tax" />
+                            <Grid
+                                Grid.Row="2"
+                                Margin="0,0,0,5"
+                                HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <RadioButton
+                                    Grid.Column="0"
+                                    Margin="0,0,5,0"
+                                    Content="On Total"
+                                    IsChecked="{Binding DiscountAndTaxOnTotal}"
+                                    Style="{DynamicResource DefaultToggleButtonStyle}" />
+                                <RadioButton
+                                    Grid.Column="1"
+                                    Content="Per Item"
+                                    IsChecked="{Binding DiscountAndTaxPerItem}"
+                                    Style="{DynamicResource DefaultToggleButtonStyle}" />
+                            </Grid>
+
+                            <Grid
+                                Grid.Row="3"
+                                Margin="0,0,0,5"
+                                Visibility="{Binding DiscountAndTaxOnTotal, Converter={StaticResource BoolToVisibility}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                    <TextBlock Margin="3,0,0,2" Text="Discount %" />
+                                    <wpfui:TextBox IsEnabled="{Binding GiveDiscount}" Text="{Binding NewPurchase.DiscountPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Margin="3,0,0,2" Text="Discount Price" />
+                                    <wpfui:TextBox
+                                        IsEnabled="{Binding GiveDiscount}"
+                                        IsReadOnly="True"
+                                        Text="{Binding NewPurchase.DiscountAmount, Mode=TwoWay}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid
+                                Grid.Row="4"
+                                Margin="0,0,0,5"
+                                Visibility="{Binding DiscountAndTaxOnTotal, Converter={StaticResource BoolToVisibility}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                    <TextBlock Margin="3,0,0,2" Text="Tax %" />
+                                    <wpfui:TextBox IsEnabled="{Binding GiveDiscount}" Text="{Binding NewPurchase.TaxPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Margin="3,0,0,2" Text="Tax Price" />
+                                    <wpfui:TextBox
+                                        IsEnabled="{Binding GiveDiscount}"
+                                        IsReadOnly="True"
+                                        Text="{Binding NewPurchase.TaxAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </wpfui:CardExpander>
+                    <Border
+                        Grid.Row="1"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="3 3 0 0">
+
+                        <wpfi:FlowLayoutControl
+                            Padding="5"
+                            HorizontalAlignment="Stretch"
+                            dx:ScrollBarExtensions.ScrollBarMode="TouchOverlap"
+                            AllowItemMoving="True"
+                            AllowLayerSizing="True"
+                            AnimateItemMoving="True"
+                            AnimateScrolling="True"
+                            DragScrolling="True"
+                            ItemsSource="{Binding PurchaseCartList, IsAsync=True}"
+                            Orientation="Vertical"
+                            StretchContent="True">
+
+                            <wpfi:FlowLayoutControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <views:PurchaseCartListItemUC />
+                                </DataTemplate>
+                            </wpfi:FlowLayoutControl.ItemTemplate>
+                        </wpfi:FlowLayoutControl>
+                    </Border>
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,0,0,5"
+                        Padding="2,5,0,4"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="0 0 3 3">
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{DynamicResource TextBlockDefault}"
+                                Text="{Binding PurchaselistCount, StringFormat='Count: {0}, ', Mode=TwoWay}" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Style="{DynamicResource TextBlockDefault}"
+                                Text="{Binding PurchaselistQuantity, StringFormat='Quantity: {0}', Mode=TwoWay}" />
+                            <wpfui:Button
+                                Grid.Column="2"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Right"
+                                Command="{Binding ClearCartListCommand}"
+                                Content="Clear"
+                                Style="{DynamicResource ButtonDanger.Small}" />
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource TextBlockSubTitle}"
+                            Visibility="{Binding DiscountAndTaxOnTotal, Converter={StaticResource BoolToVisibility}}">
+                            <Run Text="Total" />
+                            <Run Text="{Binding CompanyDetails.CurrencySymbol}" />
+                            <Run Text="{Binding NewPurchase.SubTotal, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </TextBlock>
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Right"
+                            FontSize="{StaticResource FontSize-Larger}"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource SuccessBrush}"
+                            Style="{DynamicResource TextBlockDefault}">
+                            <Run Text="GrandTotal" />
+                            <Run Text="{Binding CompanyDetails.CurrencySymbol}" />
+                            <Run Text="{Binding NewPurchase.GrandTotal, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </TextBlock>
+                        <wpfui:Button
+                            Grid.Row="2"
+                            Height="40"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding SaveNewPurchaseCommand}"
+                            Content="Save"
+                            FontSize="{StaticResource FontSize-Larger}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+
+    <!--  Purchase Section  -->
+</UserControl>
